@@ -1,0 +1,21 @@
+{
+  "name": "07-astro-authjs-astrodb-store",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/netlify": "^6.5.6",
+    "@astrojs/tailwind": "^6.0.2",
+    "@auth/core": "^0.37.4",
+    "@tailwindcss/vite": "^4.1.11",
+    "astro": "^5.12.9",
+    "auth-astro": "^4.2.0",
+    "sweetalert2": "^11.22.3",
+    "tailwindcss": "^3.4.17"
+  }
+}
