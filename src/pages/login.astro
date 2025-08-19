@@ -89,7 +89,7 @@ import AuthLayout from '@/layouts/AuthLayout.astro';
 </AuthLayout>
 
 <script>
-  import { actions } from 'astro:actions';
+  
   import Swal from 'sweetalert2';
 
   const form = document.querySelector('form') as HTMLFormElement;
@@ -105,10 +105,10 @@ import AuthLayout from '@/layouts/AuthLayout.astro';
     const formData = new FormData(form);
 
     const resp = await signIn('credentials', {
-      email: formData.get('email') as string,
-      password: formData.get('password') as string,
+      email: formData.get('email'),
+      password: formData.get('password') ,
       redirect: false,
-    });
+    } as any );
 
     console.log({ resp });
 
