@@ -1,7 +1,7 @@
 interface User {
   name: string;
   email: string;
-  // TODO: expandirlo
+  
 }
 
 declare namespace App {

@@ -2,6 +2,7 @@ import { defineConfig } from 'auth-astro';
 import Credentials from '@auth/core/providers/credentials';
 import { db, eq, User } from 'astro:db';
 import bcrypt from 'bcryptjs';
+import type { AdapterUser } from '@auth/core/adapters';
 
 export default defineConfig({
   providers: [
@@ -33,4 +34,17 @@ export default defineConfig({
         }
     })
   ],
+  callbacks : {
+    jwt : ({token , user}) => {
+        /* si existe el user , lo agregamos al token */
+        if(user){
+            token.user = user;
+        }
+        return token; /* jwt siempre devuelve un token de sesion  */
+    },
+    session : ({session , token}) => {
+        session.user = token.user as AdapterUser; /* al no ser del mismo tipo debemos definirlo */
+        return session; /* devuelve siempre un session aca es donde agregamos datos a session  */
+    }
+  }
 });
