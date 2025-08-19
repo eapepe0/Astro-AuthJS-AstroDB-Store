@@ -96,9 +96,9 @@ import AuthLayout from '@/layouts/AuthLayout.astro';
   const btnSubmit = document.querySelector('#btn-submit') as HTMLButtonElement;
   const bntGoogle = document.querySelector('#btn-google') as HTMLButtonElement;
 
-/*   const { signIn } = await import('auth-astro/client'); */
+  const { signIn } = await import('auth-astro/client');
 
-/*   form.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     btnSubmit.setAttribute('disabled', 'disabled');
 
@@ -109,8 +109,8 @@ import AuthLayout from '@/layouts/AuthLayout.astro';
       password: formData.get('password') as string,
       redirect: false,
     });
- */
-/*     console.log({ resp });
+
+    console.log({ resp });
 
     if (resp) {
       Swal.fire({
@@ -126,7 +126,7 @@ import AuthLayout from '@/layouts/AuthLayout.astro';
     // TODO:
     window.location.replace('/');
   });
- */
+
   bntGoogle.addEventListener('click', async () => {
     bntGoogle.setAttribute('disabled', 'disabled');
 
