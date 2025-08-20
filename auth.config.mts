@@ -1,5 +1,6 @@
 import { defineConfig } from 'auth-astro';
 import Credentials from '@auth/core/providers/credentials';
+import Google from '@auth/core/providers/google';
 import { db, eq, User } from 'astro:db';
 import bcrypt from 'bcryptjs';
 import type { AdapterUser } from '@auth/core/adapters';
@@ -32,7 +33,11 @@ export default defineConfig({
             const {password :_ , ...rest} =  user; /* desestructuramos con renombrado de usuario , para sacar password del objeto y  retornar lo demas */            
             return rest;
         }
-    })
+    }),
+     Google({
+      clientId: import.meta.env.AUTH_GOOGLE_ID,
+      clientSecret: import.meta.env.AUTH_GOOGLE_SECRET,
+    }),
   ],
   callbacks : {
     jwt : ({token , user}) => {

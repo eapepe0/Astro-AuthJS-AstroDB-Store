@@ -1,5 +1,6 @@
 ---
 import AuthLayout from '@/layouts/AuthLayout.astro';
+
 ---
 
 <AuthLayout>
@@ -98,6 +99,7 @@ import AuthLayout from '@/layouts/AuthLayout.astro';
 
   const { signIn } = await import('auth-astro/client');
 
+  /* el boton de login  */
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     btnSubmit.setAttribute('disabled', 'disabled');
@@ -123,27 +125,25 @@ import AuthLayout from '@/layouts/AuthLayout.astro';
       return;
     }
 
-    // TODO:
+
     window.location.replace('/');
   });
 
+  /* boton de login con google */
   bntGoogle.addEventListener('click', async () => {
     bntGoogle.setAttribute('disabled', 'disabled');
 
+    const formData = new FormData(form);
     try {
-      //! Paso 1: obtener la credenciales del lado del cliente
-
-      // Paso 2: Vericar las credenciales en el backend
-
-      if (true) {
-        alert('error.message');
-        bntGoogle.removeAttribute('disabled');
-        return;
-      }
-
+      // Nos logueamos usando google , no hace falta que le enviemos ningun dato
+      await signIn('google') /* nos logeamos usando google */
       bntGoogle.innerText = 'Redireccionando...';
-      window.location.replace('/protected');
     } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al ingresar',
+        text: 'Usuario / Contraseña no son correctos',
+      });
       console.log(error);
       bntGoogle.removeAttribute('disabled');
     }

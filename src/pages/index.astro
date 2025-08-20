@@ -3,9 +3,10 @@ import MainLayout from '@/layouts/MainLayout.astro';
 import { getSession } from 'auth-astro/server';
 
 const session = await getSession(Astro.request); /* extraemos la sesion que viaja en la request  */
-
+console.log(`session : ${session}`)
 const {user} = session ?? {} /* si existe un usuario en session o sino sera un objeto vacio */
 
+console.log(`Usuario : ${user}`);
 ---
 
 <MainLayout>

@@ -3,7 +3,7 @@ import {v4 as UUID} from 'uuid';
 import bcrypt from 'bcryptjs';
 
 // https://astro.build/db/seed
-export default async function seed() {
+export async function GET() {
 	const roles = [
 		{id : 'admin' , name : "Administrador"},
 		{id : 'user' , name : 'Usuario'}
@@ -29,4 +29,7 @@ export default async function seed() {
 
 	await db.insert(Role).values(roles); /* insertamos en nuestra tabla Role , los valores de roles */
 	await db.insert(User).values([juanPerez , juanaPerez]); /* insertamos en nuestra tabla User , los valores de juanPerez y juanaPerez */
+
+	return new Response("🌱 Seed ejecutado correctamente");
+
 }
