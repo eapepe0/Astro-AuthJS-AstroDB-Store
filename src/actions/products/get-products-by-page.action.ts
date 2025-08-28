@@ -1,8 +1,9 @@
 
 
 
+import type { ProductWithImages } from "@/interfaces/product-with-images.interface";
 import { defineAction } from "astro:actions";
-import { count, db, Product } from "astro:db";
+import { count, db, Product, ProductImage, sql } from "astro:db";
 import { z } from 'astro:schema';
 
 // siempre exportamos y definimos la accion
@@ -26,19 +27,33 @@ export const getProductsByPage = defineAction({
         if(page > totalPages){
             //! devolvemos un arreglo vacio de productos 
             return {
-                products : [],
+                products : [] as ProductWithImages[],
                 totalPages : totalPages
             }
         }
         //> hacemos la consulta a la db
-        const products = await db
-        .select()
-        .from(Product) /* seleccionamos de la tabla productos */
-        .limit(limit) /* cuantos productos = 12  */
-        .offset((page - 1) * limit ); /* desde donde = si pagina es 1 = (1-1 = 0) * 12 = 0  | si la pagina es 2 = (2 - 1 = 1) * 12 = 12 desde el registro 13*/
+
+        /* const products = await db */
+        /* .select() */
+        /* .from(Product)  *//* seleccionamos de la tabla productos */
+        /* .limit(limit) */ /* cuantos productos = 12  */
+        /* .offset((page - 1) * limit ); */ /* desde donde = si pagina es 1 = (1-1 = 0) * 12 = 0  | si la pagina es 2 = (2 - 1 = 1) * 12 = 12 desde el registro 13*/
+
+        const productsQuery = sql`
+        select a.*,
+            ( select GROUP_CONCAT(image,',') from 
+	            ( select * from ${ProductImage} where productId = a.id limit 2 )
+            ) as images
+            from ${Product} a
+            LIMIT ${limit} OFFSET ${(page - 1 ) * limit };
+        `
+
+        const {rows} = await db.run(productsQuery);
+
+        console.log(rows)
 
         return {
-            products : products,
+           products : rows as unknown as ProductWithImages[] , 
             totalPages : totalPages
         };// retorna esto
     },

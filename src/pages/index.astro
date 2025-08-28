@@ -2,15 +2,15 @@
 import MainLayout from '@/layouts/MainLayout.astro';
 import { actions } from 'astro:actions';
 
-const {data , error } = await Astro.callAction(actions.getProductsByPage , {})
+const {data : products , error } = await Astro.callAction(actions.getProductsByPage , {})
 
 
 if(error){
   return Astro.redirect('/');
 }
 
-console.log(data.products)
-console.log(data.totalPages)
+console.log(products)
+
 ---
 
 <MainLayout>
