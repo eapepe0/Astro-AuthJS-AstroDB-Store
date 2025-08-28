@@ -1,19 +1,19 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
-import { getSession } from 'auth-astro/server';
+import { actions } from 'astro:actions';
 
-const session = await getSession(Astro.request); /* extraemos la sesion que viaja en la request  */
-console.log(`session : ${session}`)
-const {user} = session ?? {} /* si existe un usuario en session o sino sera un objeto vacio */
+const {data , error } = await Astro.callAction(actions.getProductsByPage , {})
 
-console.log(`Usuario : ${user}`);
+
+if(error){
+  return Astro.redirect('/');
+}
+
+console.log(data.products)
+console.log(data.totalPages)
 ---
 
 <MainLayout>
   <h1 class="text-3xl">Home Page</h1>
-  <pre>
-    <code>
-      {JSON.stringify(user)}
-    </code>
-  </pre>
+
 </MainLayout>

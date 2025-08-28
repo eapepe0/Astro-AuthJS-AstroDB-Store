@@ -24,6 +24,21 @@ Puntualmente veremos:
 
 - Relaciones de AstroDB
 
+# A partir de 176
+- Integración con React
+
+- Server Actions
+
+- Raw Queries
+
+- Transacciones Batch de base de datos
+
+- Paginación usando AstroDB
+
+- Swiper para un carrusel
+
+- Vanilla JavaScript / TypeScript para ciertas funcionalidades
+
 ## Deploy
 
 [Link a la pagina]()
