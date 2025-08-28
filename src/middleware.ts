@@ -36,7 +36,10 @@ export const onRequest = defineMiddleware(
     if (isLoggedIn && notAuthenticatedRoutes.includes(url.pathname)) {
       return redirect('/');
     }
-
+    /* si no estas logeado como admin no podes entrar a /api para hacer el seed a la db de forma remota */
+    if (!locals.isAdmin && url.pathname.startsWith('/api/seed')) {
+      return redirect('/');
+    }
     return next();
   }
 );

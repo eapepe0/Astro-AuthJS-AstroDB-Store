@@ -112,7 +112,7 @@ import AuthLayout from '@/layouts/AuthLayout.astro';
       redirect: false,
     } as any );
 
-    console.log({ resp });
+    console.log( {resp} );
 
     if (resp) {
       Swal.fire({
@@ -124,8 +124,6 @@ import AuthLayout from '@/layouts/AuthLayout.astro';
       btnSubmit.removeAttribute('disabled');
       return;
     }
-
-
     window.location.replace('/');
   });
 

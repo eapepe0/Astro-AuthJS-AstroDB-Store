@@ -1,5 +1,13 @@
 import { column, defineDb, defineTable } from 'astro:db';
 
+
+const Role = defineTable({
+  columns : {
+    id: column.text({primaryKey : true}),
+    name : column.text(),
+  }
+})
+
 /* definimos una tabla llamada User */
 const User = defineTable({
   columns : {
@@ -13,13 +21,6 @@ const User = defineTable({
 })
 
 
-const Role = defineTable({
-  columns : {
-    id: column.text({primaryKey : true}),
-    name : column.text(),
-  }
-})
-
 
 /* definimos nuestra tabla llama Productos */
 const Product = defineTable({
@@ -29,14 +30,14 @@ const Product = defineTable({
     gender : column.text(),
     price : column.number(),
     sizes : column.text(),
-    slug : column.text(),
+    slug : column.text({unique: true}),
     stock : column.number(),
     tags: column.text(),
     title : column.text(),
     type: column.text(),
 
     /* relacion con otra tabla , Usuario */
-    users : column.text({references : () => User.columns.id })
+    user : column.text({references : () => User.columns.id })
   }
 })
 
@@ -54,8 +55,8 @@ const ProductImage = defineTable({
 // https://astro.build/db/config
 export default defineDb({
   tables: {
-    User,
     Role,
+    User,
     Product,
     ProductImage
   }
