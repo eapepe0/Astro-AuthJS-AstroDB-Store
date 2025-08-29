@@ -8,9 +8,11 @@ import tailwind from '@astrojs/tailwind';
 
 import db from '@astrojs/db';
 
+import react from '@astrojs/react';
+
 // https://astro.build/config
 export default defineConfig({
   adapter: netlify(),
-  integrations: [auth(), tailwind(), db()],
+  integrations: [auth(), tailwind(), db(), react()],
   output : "server"
 });
