@@ -7,8 +7,8 @@ interface Props{
 
 const {totalPages} = Astro.props;
 const url = Astro.url; // obtenemos la URL 
+
 const rawPage = url.searchParams.get('page'); /* tomamos el parametro seguido de page */
-console.log(rawPage)
 let pageParam = Number( rawPage) ; // convertimos a numero , la busqueda entre los parametros de la url que sean page por ejemplo localhost:4321/?page=2 
 
 /* si no existe valor despues de page o no es un numero sera 1 */
@@ -22,7 +22,6 @@ const currentPage = Math.max(pageParam > totalPages ? totalPages : pageParam , 1
 
 const path = url.pathname;
 
-console.log(currentPage)
 ---
 
 <div class="flex justify-between my-32">

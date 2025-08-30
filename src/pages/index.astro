@@ -4,10 +4,20 @@ import { actions } from 'astro:actions';
 import { ProductList } from "@/components/products/ProductList";
 import Pagination from '@/components/shared/Pagination.astro';
 
+const rawPage = Astro.url.searchParams.get('page'); /* tomamos el parametro seguido de page */
+let pageParam = Number( rawPage) ; // convertimos a numero , la busqueda entre los parametros de la url que sean page por ejemplo localhost:4321/?page=2 
 
+
+/* si no existe valor despues de page o no es un numero sera 1 */
+if(!rawPage || Number.isNaN(pageParam) ){
+    pageParam = 1
+}
+console.log("🚀 ~ pageParam:", pageParam)
 
 // usamos la accion getProductsByPage , devuelve un data y un error 
-const {data  , error } = await Astro.callAction(actions.getProductsByPage , {})
+const {data  , error } = await Astro.callAction(actions.getProductsByPage , {
+  page : pageParam,
+})
 
 // si hay un error volvemos al root
 if(error){
@@ -16,6 +26,7 @@ if(error){
 
 // desestructuramos de la data , los productos y las paginas totales
 const {products , totalPages} = data;
+
 
 ---
 

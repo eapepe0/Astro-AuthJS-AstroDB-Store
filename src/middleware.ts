@@ -6,11 +6,11 @@ const notAuthenticatedRoutes = ['/login', '/register'];
 export const onRequest = defineMiddleware(
   async ({ url, locals, redirect , request }, next) => {
     const session = await getSession(request); /* sacamos la sesion del request */
-    console.log(`session desde middleware : ${session}`)
+    
     const isLoggedIn = !!session; /* si existe sesion es que estamos logeados  */
-    console.log(`isLoggedIn en Middleware : ${isLoggedIn}`)
+    
     const user = session?.user; /* metemos en user , el user de session */
-    console.log(`user desde middleware : ${user}`);
+    
 
     // TODO:
     locals.isLoggedIn = isLoggedIn; /* decimos que isLoggedIn en locals es igual a isLoggedIn de session */
