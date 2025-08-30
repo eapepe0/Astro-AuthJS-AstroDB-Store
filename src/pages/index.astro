@@ -2,14 +2,19 @@
 import MainLayout from '@/layouts/MainLayout.astro';
 import { actions } from 'astro:actions';
 import { ProductList } from "@/components/products/ProductList";
+import Pagination from '@/components/shared/Pagination.astro';
 
+
+
+// usamos la accion getProductsByPage , devuelve un data y un error 
 const {data  , error } = await Astro.callAction(actions.getProductsByPage , {})
 
-
+// si hay un error volvemos al root
 if(error){
   return Astro.redirect('/');
 }
 
+// desestructuramos de la data , los productos y las paginas totales
 const {products , totalPages} = data;
 
 ---
@@ -18,5 +23,5 @@ const {products , totalPages} = data;
   <h1 class="text-3xl">Listado de Productos</h1>
 
   <ProductList products={products} client:idle/>
-
+  <Pagination totalPages={totalPages}/>
 </MainLayout>

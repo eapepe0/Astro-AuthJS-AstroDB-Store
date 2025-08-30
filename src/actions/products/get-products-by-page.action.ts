@@ -48,9 +48,8 @@ export const getProductsByPage = defineAction({
             LIMIT ${limit} OFFSET ${(page - 1 ) * limit };
         `
 
-        const {rows} = await db.run(productsQuery);
+        const {rows} = await db.run(productsQuery); // ejecutamos la query y los resultados los tenemos en row
 
-        console.log(rows)
 
         return {
            products : rows as unknown as ProductWithImages[] , 

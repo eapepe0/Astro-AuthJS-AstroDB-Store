@@ -1,0 +1,52 @@
+---
+interface Props{
+    totalPages : number;
+
+}
+
+
+const {totalPages} = Astro.props;
+const url = Astro.url; // obtenemos la URL 
+const rawPage = url.searchParams.get('page'); /* tomamos el parametro seguido de page */
+console.log(rawPage)
+let pageParam = Number( rawPage) ; // convertimos a numero , la busqueda entre los parametros de la url que sean page por ejemplo localhost:4321/?page=2 
+
+/* si no existe valor despues de page o no es un numero sera 1 */
+if(!rawPage || Number.isNaN(pageParam)){
+    pageParam = 1
+}
+
+const currentPage = Math.max(pageParam > totalPages ? totalPages : pageParam , 1);
+/* tomamos el maximo entre la 1er validacion (pageParam > total pages) y 1  , por si el usuario quiere poner pages en un numero negativo , si pones un num negativo currentPage sera 1 */ 
+/* entonces si pageParam es mayor a totalPages devuelve el totalPages , de lo contrario pageParam  */
+
+const path = url.pathname;
+
+console.log(currentPage)
+---
+
+<div class="flex justify-between my-32">
+    {
+        /* si la pagina actual no es la primera mostramos el boton anterior de lo contrario algo vacio */
+        currentPage !== 1 ? (
+            <a href={`${path}?page=${Math.max(currentPage - 1 , 1)}`}  class="button disabled:bg-gray-400 disabled:cursor-not-allowed">Anteriores</a>
+        ):
+        <span></span>
+    }
+    
+    <span>Pagina {currentPage} de {totalPages}</span>
+    {
+        /* si la pagina actual no es igual al total de las paginas mostramos siguientes de lo contrario algo vacio */
+        currentPage !== totalPages ? (
+            <a href={`${path}?page=${Math.min(currentPage + 1 , totalPages)}`} class="button" >Siguientes</a>
+        ) :
+        <span></span>
+    }
+    
+</div>
+
+<style>
+    .button{
+        @apply p-2 bg-blue-500 text-white rounded;
+    }
+</style>
