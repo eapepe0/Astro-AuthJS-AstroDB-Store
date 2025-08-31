@@ -38,6 +38,26 @@ Puntualmente veremos:
 - Swiper para un carrusel
 
 - Vanilla JavaScript / TypeScript para ciertas funcionalidades
+ 
+# A partir de 193
+
+Esta sección es muy interesante porque aprenderemos mucho sobre acciones, cookies, nano stores y conectarlo todo para dar una experiencia placentera a nuestros usuarios.
+
+Puntualmente veremos:
+
+- Nano Stores
+
+- Cookies
+
+- Acciones
+
+- CRUD al carrito de compras
+
+- Adaptadores para las cookies
+
+- Navegación dentro de ViewTransitions
+
+El objetivo es hacer la implementación del carrito de compras y su actualización.
 
 ## Deploy
 

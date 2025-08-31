@@ -12,7 +12,7 @@ let pageParam = Number( rawPage) ; // convertimos a numero , la busqueda entre l
 if(!rawPage || Number.isNaN(pageParam) ){
     pageParam = 1
 }
-console.log("🚀 ~ pageParam:", pageParam)
+
 
 // usamos la accion getProductsByPage , devuelve un data y un error 
 const {data  , error } = await Astro.callAction(actions.getProductsByPage , {
@@ -27,6 +27,9 @@ if(error){
 // desestructuramos de la data , los productos y las paginas totales
 const {products , totalPages} = data;
 
+if(data.products.length === 0){
+  return Astro.redirect(`/?page=${totalPages}`);
+}
 
 ---
 
