@@ -6,10 +6,13 @@ import { actions } from "astro:actions";
 
 const slug = Astro.params.slug ?? '';
 
+const { data, error } = await Astro.callAction(actions.getProductBySlug, slug);
 
-const  {data , error } = await Astro.callAction(actions.getProductBySlug, slug);
+const { product, images } = data;
+const sizes = product.sizes.split(",");
 
-const {product, images} = data;
+console.log(product)
+
 ---
 
 
@@ -30,10 +33,8 @@ const {product, images} = data;
 
       <h3 class="mt-5">Tallas</h3>
       <ul class="flex gap-3">
-        {
-          product.sizes
-            .split(',')
-            .map((size) => <li data-size={size}>{size}</li>)
+         {
+          sizes.map((size : string) => (<li data-size={size}>{size}</li>))
         }
       </ul>
 
@@ -55,6 +56,60 @@ const {product, images} = data;
 
   <input type="hidden" id="product-id" value={product.id} />
 </MainLayout>
+
+<!-- vanilla JS -->
+<script>
+    const sizeElements = document.querySelectorAll('li'); /* obtenemos todos los li */
+    
+    /* por cada li (size de las tallas) */
+    sizeElements.forEach( liElement => {
+        /* le agregamos un evento click */
+        liElement.addEventListener('click' , () => {
+            /* por cada elemento le sacamos la clase seleccionada */
+            sizeElements.forEach(s => s.classList.remove('selected-size'));
+            /* se la agregamos solamente al que le hayamos hecho click */
+            liElement.classList.add('selected-size');
+        })
+    })
+
+    /* hay 2 input , selecciona el 1ero el de la cantidad */
+    const quantityInput = document.querySelector('input') as HTMLInputElement;
+    const productIdInput = document.querySelector('#product-id') as HTMLInputElement;
+
+    let quantity = 1;
+
+    /* buscando por boton , los devolvera en el orden que esta en el html , - +  y Añadir al carrito */
+    const [ decrementButton , incrementButton , addToCartButton] = document.querySelectorAll('button');
+
+    /* le agregamos el evento click a los botones y una verificacion de cantidad maxima por producto */
+
+    incrementButton.addEventListener('click', () => {
+        quantity = Math.min(quantity + 1, 5) ; /*  va a ir desde 1 sumando hasta 5 */
+        quantityInput.value = quantity.toString(); /* cambiamos el valor del input convertimos a string  */
+    })
+
+    decrementButton.addEventListener('click', () => {
+        quantity = Math.max(quantity - 1, 1) ; /*  va a ir desde 1 restado hasta 1 */
+        quantityInput.value = quantity.toString(); /* cambiamos el valor del input convertimos a string  */
+    })
+    
+    /* evento click en el boton agregar al carrito */
+    addToCartButton.addEventListener('click', () => {
+        const size = document.querySelector('.selected-size')?.textContent; /* seleccionamos lo que tenga la clase .selected-size , su texto */
+        /* si no existe una talla seleccionada*/
+        if(!size){
+            return alert('Seleccione una talla');
+        }
+        /* deshabilitamos apretar 2 veces el boton  */
+        addToCartButton.disabled = true;
+
+        console.log({
+            id: productIdInput.value,
+            size : size,
+            quantity : quantity
+        });
+    })
+</script>
 
 
 <style>
