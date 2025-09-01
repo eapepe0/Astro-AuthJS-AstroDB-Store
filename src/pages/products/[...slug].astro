@@ -59,6 +59,8 @@ console.log(product)
 
 <!-- vanilla JS -->
 <script>
+import { CartCookiesClient } from "@/utils/cart-cookies";
+
     const sizeElements = document.querySelectorAll('li'); /* obtenemos todos los li */
     
     /* por cada li (size de las tallas) */
@@ -102,12 +104,14 @@ console.log(product)
         }
         /* deshabilitamos apretar 2 veces el boton  */
         addToCartButton.disabled = true;
-
-        console.log({
-            id: productIdInput.value,
+        
+        CartCookiesClient.addItem({
+            productId: productIdInput.value,
             size : size,
             quantity : quantity
         });
+
+        window.location.href='/cart'; /* vamos a la pagina cart */
     })
 </script>
 
