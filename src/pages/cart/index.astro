@@ -4,6 +4,7 @@ import { actions } from "astro:actions";
 
 const { data } = await Astro.callAction(actions.loadProductsFromCart,{});
 
+console.log(data)
 ---
 
 <MainLayout title="Carrito de compras">
