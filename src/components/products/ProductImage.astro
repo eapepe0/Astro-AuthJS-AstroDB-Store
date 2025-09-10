@@ -1,0 +1,14 @@
+---
+interface Props{
+    src : string;
+    alt : string;
+    className : string;
+}
+
+
+const {src , alt , className} = Astro.props; /* extraemos de las props */
+
+const currentImage = src.startsWith('http') ? src : `/images/products/${src}`; /* si empieza con http la dejamos sino la tomamos local */
+---
+
+<img src={currentImage} alt={alt} class:list={[className]}/>

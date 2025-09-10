@@ -1,9 +1,69 @@
 ---
 import MainLayout from "@/layouts/MainLayout.astro"
+import Pagination from '@/components/shared/Pagination.astro';
+import { actions } from 'astro:actions';
+import { Formatter } from "@/utils/formatter";
+import ProductImage from "@/components/products/ProductImage.astro";
+
+
+const rawPage = Astro.url.searchParams.get('page'); /* tomamos el parametro seguido de page */
+let pageParam = Number( rawPage) ; // convertimos a numero , la busqueda entre los parametros de la url que sean page por ejemplo localhost:4321/?page=2 
+
+console.log(pageParam)
+/* si no existe valor despues de page o no es un numero sera 1 */
+if(!rawPage || Number.isNaN(pageParam) ){
+    pageParam = 1
+}
+
+
+// usamos la accion getProductsByPage , devuelve un data y un error 
+const {data  , error } = await Astro.callAction(actions.getProductsByPage , {
+  page : pageParam,
+})
+
+// si hay un error volvemos al root
+if(error){
+  return Astro.redirect('/');
+}
+
+// desestructuramos de la data , los productos y las paginas totales
+const {products , totalPages} = data;
+
 
 
 ---
 
 <MainLayout title="Panel administrativo">
-    <h1>Productos</h1>
+    <h1>Dashboard</h1>
+    <p>Listado de productos</p>
+
+    <table class="w-full mt-2">
+        <thead>
+            <tr>
+                <th class="text-left">Imagen</th>
+                <th class="text-left">Titulo</th>
+                <th class="text-left">Precio</th>
+                <th class="text-left">Inventario</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {
+                products.map((producto) => (
+                    <tr class="border">
+                        <td><ProductImage src={producto.images.split(',')[0]} alt={producto.title} className="w-20 h-20"/> </td>
+                        <td>
+                            <a href={`/admin/products/${producto.slug}`} /* data-astro-prefetch='load' */ class="hover:underline cursor-pointer">{producto.title}</a>
+                        </td>
+                        <td>{Formatter.currency(producto.price)}</td>
+                        <td>{producto.stock}</td>
+                    </tr>
+                    
+                ))
+            }
+      
+        </tbody>
+ 
+    </table>
+    <Pagination totalPages={totalPages} />
 </MainLayout>
