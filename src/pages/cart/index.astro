@@ -5,11 +5,12 @@ import {Formatter} from '@/utils/formatter'
 
 const { data : products, error} = await Astro.callAction(actions.loadProductsFromCart,{});
 
+/* si existe error o no existe productos volvemos */
 if(error || !products) {
     return Astro.redirect('/')
 }
-console.log(products)
 
+/* sumamos el total del carrito , sumamos el acumulado con la multiplicacion del precio por la cantidad , arranca en 0 */
 const total = products?.reduce((acc, producto)=> acc + producto.price * producto.quantity , 0)
 ---
 
@@ -34,7 +35,7 @@ const total = products?.reduce((acc, producto)=> acc + producto.price * producto
                             <p>
                                 Cantidad : <span class="font-bold">{producto.quantity}</span>
                             </p>
-                            <button class="text-blue-500 btn-delete">
+                            <button class="text-blue-500 btn-delete" data-id={producto.productId} data-size={producto.size}>
                                 Remover
                             </button>
                         </div>
@@ -77,3 +78,25 @@ const total = products?.reduce((acc, producto)=> acc + producto.price * producto
     </section>
 
 </MainLayout>
+
+
+<script>
+import { CartCookiesClient } from "@/utils/cart-cookies";
+
+
+    const deleteButtons : NodeListOf<HTMLButtonElement> = document.querySelectorAll('.btn-delete');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', (event)=>{
+                const target = event.target as HTMLButtonElement;
+                const productId = target.dataset.id ?? '';
+                const size = target.dataset.size ?? '';
+                
+                console.log({target , productId , size});
+               CartCookiesClient.removeItem(productId , size)
+
+               window.location.reload();
+            })
+        })
+
+</script>

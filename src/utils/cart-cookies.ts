@@ -23,14 +23,12 @@ export class CartCookiesClient{
         Cookies.set('cart', JSON.stringify(cart)) /* mandamos el carro a la cookie */
         return cart;
     }
-    /* removemos un item del carro */
+    /* removemos un item del carro , recibimos un productId y un size */
     static removeItem(productId : string , size : string): CartItem[]{
         const cart = CartCookiesClient.getCart(); /* obtenemos le carro */
-        const updatedCart = cart.filter((item) => !(item.productId === productId && item.size === size))
+        const updatedCart = cart.filter((item) => !(item.productId === productId && item.size === size)) // filtramos depende del id y del tamaño
 
-        console.log(updatedCart)
-        
-        Cookies.set('cart', JSON.stringify(cart));
+        Cookies.set('cart', JSON.stringify(updatedCart));
 
         return updatedCart;
     }
