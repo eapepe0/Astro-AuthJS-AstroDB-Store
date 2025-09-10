@@ -59,6 +59,19 @@ Puntualmente veremos:
 
 El objetivo es hacer la implementación del carrito de compras y su actualización.
 
+# A partir de 205
+
+- Server Actions con archivos (multi-part)
+
+- Mantenimientos en Vanilla JS/TS
+
+- CRUD sobre productos e imágenes
+
+- Drag & Drop sin islas, sin paquetes
+
+- Cloudinary para subir archivos
+
+- Despliegues y SEO
 ## Deploy
 
 [Link a la pagina]()
