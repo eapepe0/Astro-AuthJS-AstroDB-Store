@@ -1,13 +1,79 @@
 ---
 import MainLayout from "@/layouts/MainLayout.astro";
 import { actions } from "astro:actions";
+import {Formatter} from '@/utils/formatter'
 
-const { data } = await Astro.callAction(actions.loadProductsFromCart,{});
+const { data : products, error} = await Astro.callAction(actions.loadProductsFromCart,{});
 
-console.log(data)
+if(error || !products) {
+    return Astro.redirect('/')
+}
+console.log(products)
+
+const total = products?.reduce((acc, producto)=> acc + producto.price * producto.quantity , 0)
 ---
 
 <MainLayout title="Carrito de compras">
     <h1>Carrito</h1>
-    <code>{JSON.stringify(data)}</code>
+    <section class="grid grid-cols-1 sm:grid-cols-2">
+        <!-- Productos -->
+        <div class="order-2 sm:order-1">
+            <h2>Productos</h2>
+            <a href="javascript:history.back()" class="hover:underline text-blue-500">Regresar</a>
+
+            {
+                products?.map(producto => (
+                    <div class="flex gap-5 mt-5">
+                        <img src={producto.image} alt={producto.title} class="w-20 h-20"/>
+                        <div class="">
+                            <a href={`/products/${producto.slug}`} class="hover:underline">{producto.title}</a>
+                            <p>${producto.price}</p>
+                            <p>
+                                Talla : <span class="font-bold">{producto.size}</span>
+                            </p>
+                            <p>
+                                Cantidad : <span class="font-bold">{producto.quantity}</span>
+                            </p>
+                            <button class="text-blue-500 btn-delete">
+                                Remover
+                            </button>
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+
+
+        <!-- Totales -->
+
+        <div class="bg-black h-[330px] text-white p-6 rounded-lg shadow-lg order-1">
+      <h2 class="text-lg font-semibold mb-4">Resumen de compra</h2>
+
+      <div class="flex justify-between text-gray-400 mb-2">
+        <span>Envío</span>
+        <span>Gratis</span>
+      </div>
+
+      <div class="flex justify-between text-gray-400 mb-4">
+        <span>SubTotal </span>
+        <span>{Formatter.currency(total)}</span>
+      </div>
+      <div class="flex justify-between text-gray-400 mb-4">
+        <span>Impuesto </span>
+        <span>{Formatter.currency(total * 0.15)}</span>
+      </div>
+
+      <div class="flex justify-between text-xl font-bold">
+        <span>Total</span>
+        <span>{Formatter.currency(total * 1.15)}</span>
+      </div>
+
+      <button
+        class="mt-10 w-full bg-blue-700 text-gray-300 py-3 rounded-lg hover:bg-gray-600 transition-all"
+      >
+        PAGAR
+      </button>
+    </div>
+    </section>
+
 </MainLayout>
