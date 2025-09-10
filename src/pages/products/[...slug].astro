@@ -64,6 +64,7 @@ console.log(product)
 
 <!-- vanilla JS -->
 <script>
+import { itemsInCart } from "@/store/cart.store";
 import { CartCookiesClient } from "@/utils/cart-cookies";
 
     const sizeElements = document.querySelectorAll('li'); /* obtenemos todos los li */
@@ -108,15 +109,19 @@ import { CartCookiesClient } from "@/utils/cart-cookies";
             return alert('Seleccione una talla');
         }
         /* deshabilitamos apretar 2 veces el boton  */
-        addToCartButton.disabled = true;
+        /* addToCartButton.disabled = true; */
 
-        CartCookiesClient.addItem({
+        const cart = CartCookiesClient.addItem({
             productId: productIdInput.value,
             size : size,
             quantity : quantity
         });
 
-        window.location.href='/cart'; /* vamos a la pagina cart */
+        itemsInCart.set(cart.length)
+
+        console.log(itemsInCart.get())
+
+        /* window.location.href='/cart'; */ /* vamos a la pagina cart */
     })
 </script>
 
