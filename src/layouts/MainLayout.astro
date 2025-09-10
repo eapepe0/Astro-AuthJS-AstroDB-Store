@@ -1,5 +1,6 @@
 ---
 import Navbar from '@/components/shared/Navbar.astro';
+import { ClientRouter } from "astro:transitions";
 
 import '@/assets/styles/global.css'
 
@@ -19,6 +20,8 @@ const { title = 'Astro Store' } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+
+    <ClientRouter/>
   </head>
   <body>
     <Navbar />

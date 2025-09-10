@@ -2,6 +2,7 @@
 import ProductSlideshow from "@/components/products/ProductSlideshow.astro";
 import MainLayout from "@/layouts/MainLayout.astro";
 import { actions } from "astro:actions";
+import { navigate } from "astro:transitions/client";
 
 
 const slug = Astro.params.slug ?? ''; // si hay parametro slug sino string vacio
@@ -63,9 +64,15 @@ console.log(product)
 </MainLayout>
 
 <!-- vanilla JS -->
+
 <script>
 import { itemsInCart } from "@/store/cart.store";
 import { CartCookiesClient } from "@/utils/cart-cookies";
+import { navigate } from "astro:transitions/client";
+
+document.addEventListener('astro:page-load',() =>{
+
+
 
     const sizeElements = document.querySelectorAll('li'); /* obtenemos todos los li */
     
@@ -89,6 +96,8 @@ import { CartCookiesClient } from "@/utils/cart-cookies";
     /* buscando por boton , los devolvera en el orden que esta en el html , - +  y Añadir al carrito */
     const [ decrementButton , incrementButton , addToCartButton] = document.querySelectorAll('button');
 
+
+    if(!decrementButton || !quantityInput) return ;
     /* le agregamos el evento click a los botones y una verificacion de cantidad maxima por producto */
 
     incrementButton.addEventListener('click', () => {
@@ -109,7 +118,7 @@ import { CartCookiesClient } from "@/utils/cart-cookies";
             return alert('Seleccione una talla');
         }
         /* deshabilitamos apretar 2 veces el boton  */
-        /* addToCartButton.disabled = true; */
+        addToCartButton.disabled = true;
 
         const cart = CartCookiesClient.addItem({
             productId: productIdInput.value,
@@ -118,11 +127,11 @@ import { CartCookiesClient } from "@/utils/cart-cookies";
         });
 
         itemsInCart.set(cart.length)
-
-        console.log(itemsInCart.get())
-
-        /* window.location.href='/cart'; */ /* vamos a la pagina cart */
+        navigate('/cart');
     })
+
+
+})
 </script>
 
 
