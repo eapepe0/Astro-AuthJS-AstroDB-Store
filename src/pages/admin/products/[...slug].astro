@@ -19,7 +19,6 @@ if (error) {
 // desestructuramos de data
 const { product, images } = data;
 
-console.log(product)
 ---
 
 <MainLayout title="Mantenimiento de producto">
@@ -27,6 +26,7 @@ console.log(product)
   <a href="javascript:history.back()" class="text-blue-500">← Volver</a>
 
   <form class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <input type="hidden" name="id" id="" value={product.id}>
     <!-- Datos generales -->
     <div class="mt-2">
       <h2 class="text-lg font-semibold">Datos generales</h2>
@@ -271,6 +271,9 @@ console.log(product)
 </MainLayout>
 
 <script>
+import { actions } from "astro:actions";
+import { navigate } from "astro:transitions/client";
+
   /* cubrimos con el astro:page-load por el ViewTransitions aka ClientRouter */
   document.addEventListener("astro:page-load", () => {
     const form = document.querySelector(
@@ -286,7 +289,7 @@ console.log(product)
       return;
     }
 
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async(e) => {
       e.preventDefault(); // prevenimos la recarga de la pantalla
 
       const selectedSizes = Array.from(sizeButtons) // convertimos el objeto sizeButtons a un array
@@ -299,8 +302,16 @@ console.log(product)
       formData.set("sizes", selectedSizes);
 
       const formValues = Object.fromEntries(formData.entries()); // creamos un objeto con las entradas y mostramos el valor
+      console.log("🚀 ~ :305 ~ formValues:", JSON.stringify(formValues))
 
-      console.log(formValues);
+
+      const {data , error} = await actions.createUpdateProduct(formData);
+
+      if(error){
+        return alert(error);
+      }
+
+      navigate(`/admin/products/${data.slug}`);
     });
   });
 </script>
