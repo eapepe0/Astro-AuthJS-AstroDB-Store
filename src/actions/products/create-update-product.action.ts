@@ -38,11 +38,16 @@ export const createUpdateProduct = defineAction({
             user : user.id!,
             ...rest,
         };
+        console.log("🚀 ~ :41 ~ product:", product.id)
 
-        console.log(product)
-        await db.update(Product).set(product).where(eq(Product.id, id));
-
-        
+        console.log("🚀 ~ :43 ~ form.id:", form.id)
+        // si el form.id no existe o es undefined , por que es un producto nuevo , no se genero el producto , es del form no el id = UUID
+        if(!form.id ){
+            await db.insert(Product).values(product); // insertamos el producto en la db
+        } else{ // si ya existe el producto
+            await db.update(Product).set(product).where(eq(Product.id, id)); // actualizamos
+        }
+                
 
         return product; // retorna esto
     },

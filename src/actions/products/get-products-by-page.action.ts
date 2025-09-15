@@ -49,10 +49,17 @@ export const getProductsByPage = defineAction({
         `
 
         const {rows} = await db.run(productsQuery); // ejecutamos la query y los resultados los tenemos en row
-
+        
+        // evaluamos si esta la imagen en el producto  , si existe la dejamos como esta , si no existe usamos no-image.pnk
+        const products = rows.map((product) => {
+            return {
+                ...product,
+                images : product.images ? product.images : 'no-image.png',
+            } as unknown as ProductWithImages[];
+        })
 
         return {
-           products : rows as unknown as ProductWithImages[] , 
+           products : products, 
             totalPages : totalPages
         };// retorna esto
     },
