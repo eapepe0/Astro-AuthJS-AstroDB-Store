@@ -26,7 +26,7 @@ const { product, images } = data;
   <a href="javascript:history.back()" class="text-blue-500">← Volver</a>
 
   <form class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <input type="text" name="id" id="" value={product.id}>
+    <input type="hidden" name="id" id="" value={product.id}>
     <!-- Datos generales -->
     <div class="mt-2">
       <h2 class="text-lg font-semibold">Datos generales</h2>
@@ -302,9 +302,7 @@ import { navigate } from "astro:transitions/client";
       formData.set("sizes", selectedSizes);
 
       const formValues = Object.fromEntries(formData.entries()); // creamos un objeto con las entradas y mostramos el valor
-      console.log("🚀 ~ :305 ~ formValues:", JSON.stringify(formValues))
-
-
+   
       const {data , error} = await actions.createUpdateProduct(formData);
 
       if(error){

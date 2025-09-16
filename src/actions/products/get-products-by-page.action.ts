@@ -59,7 +59,7 @@ export const getProductsByPage = defineAction({
         })
 
         return {
-           products : products, 
+            products : products, 
             totalPages : totalPages
         };// retorna esto
     },
