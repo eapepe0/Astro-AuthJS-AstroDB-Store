@@ -22,4 +22,21 @@ export class ImageUpload{
         return resp.secure_url // devolvemos la url de la o las imagenes subidas
     }
 
+    // creamos un metodo estatico que se encargara de borrar una imagen
+    static async delete(image : string){
+        try{
+        const imageName = image.split('/').pop() ?? '';
+        console.log("🚀 ~ :29 ~ ImageUpload ~ delete ~ imageName:", imageName)
+        const imageId = imageName.split('.')[0];
+        console.log("🚀 ~ :31 ~ ImageUpload ~ delete ~ imageId:", imageId)
+        
+        const resp = await cloudinary.uploader.destroy(imageId);
+        return true;
+        } catch(error){
+            console.log(error)
+            return false;
+        }
+        
+    }
+
 }
