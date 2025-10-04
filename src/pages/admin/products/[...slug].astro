@@ -355,14 +355,7 @@ import { deleteProductImage } from "@/actions/products/delete-product-image.acti
     const form = document.querySelector('form') as HTMLFormElement;
     const sizeButtons = document.querySelectorAll('.btn-size'); // seleccionamos los botones de tamaño
     const btnsDeleteImage = document.querySelectorAll<HTMLButtonElement>('.btn-delete-image'); // seleccionamos los botones X de cerrar
-    const lblSelectedFiles = document.querySelector(
-      '#lbl-selected-files'
-    ) as HTMLParagraphElement;
-    const dropZone = document.querySelector('#drop-zone') as HTMLLabelElement;
-    const fileInput = document.querySelector(
-      '#file-upload'
-    ) as HTMLInputElement;
-
+    
     if (!form) {
       return;
     }
@@ -416,16 +409,22 @@ import { deleteProductImage } from "@/actions/products/delete-product-image.acti
     });
 
     // Drag & Drop
+    const lblSelectedFiles = document.querySelector('#lbl-selected-files') as HTMLParagraphElement; // seleccionamos el label de cantidad de archivos 
+    const dropZone = document.querySelector('#drop-zone') as HTMLLabelElement; // seleccionamos el dropzone
+    const fileInput = document.querySelector('#file-upload') as HTMLInputElement; // seleccionamos el input de file-upload
 
+
+    // funcion que previene por defecto los comportamiento de distintos eventos drag
     const preventDefaults = (e: DragEvent) => {
       e.preventDefault();
       e.stopPropagation();
     };
 
+    // funcion que cambia el borde y el fondo a el dropzone agregandole una clase
     const highlight = (e: DragEvent) => {
       dropZone.classList.add('border-blue-500', 'bg-blue-50');
     };
-
+    // funcion que cambia el borde y el fondo a el dropzone sacandole una clase
     const unHighlight = (e: DragEvent) => {
       dropZone.classList.remove('border-blue-500', 'bg-blue-50');
     };
@@ -448,17 +447,19 @@ import { deleteProductImage } from "@/actions/products/delete-product-image.acti
       lblSelectedFiles.innerHTML = `<strong>${validFiles.length} archivos seleccionados</strong>`;
     };
 
+    // prevenimos los comportamientos por defecto del dragenter , dragover , dragleave , drop
     (['dragenter', 'dragover', 'dragleave', 'drop'] as const).forEach(
       (eventName) => {
         dropZone.addEventListener(eventName, preventDefaults);
         document.body.addEventListener(eventName, preventDefaults);
       }
     );
-
+    
+    // si hacemos dragenter o dragover le agregamos un eventlistener y le ponemos la funcion de cambio de fondo
     (['dragenter', 'dragover'] as const).forEach((eventName) => {
       dropZone.addEventListener(eventName, highlight);
     });
-
+    // si hacemos dragenter o dragover le agregamos un eventlistener y le ponemos la funcion de cambio de fondo
     (['dragleave', 'drop'] as const).forEach((eventName) => {
       dropZone.addEventListener(eventName, unHighlight);
     });

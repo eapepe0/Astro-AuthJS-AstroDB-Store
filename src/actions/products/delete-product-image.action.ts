@@ -7,6 +7,13 @@ import { db, eq, Product, ProductImage } from "astro:db";
 import { z } from 'astro:schema';
 import { getSession } from "auth-astro/server";
 
+
+/**
+ * Borra la imagen de un producto
+ * @param string imageID del producto.
+ * @returns true en caso de borrar la foto de la db y de cloudinary en caso de que este hosteado ahi.
+ */
+
 // siempre exportamos y definimos la accion
 export const deleteProductImage = defineAction({
     // el esquema de datos que vamos a recibir
@@ -14,7 +21,6 @@ export const deleteProductImage = defineAction({
     input : z.string(),// si no se cumple este esquema lanzara un error
     // función que maneja la acción. Recibe los datos validados como argumento.
     handler: async (imageId,{request}) => {
-        console.log("hola")
         // solamente usuarios con permisos
         const session = await getSession(request)
         const user = session?.user;
