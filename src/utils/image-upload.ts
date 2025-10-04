@@ -1,4 +1,5 @@
-import {v2 as cloudinary} from 'cloudinary'
+import { v2 as cloudinary } from 'cloudinary';
+
 
 cloudinary.config({ 
     cloud_name: import.meta.env.CLOUDINARY_CLOUD_NAME, 
@@ -26,9 +27,9 @@ export class ImageUpload{
     static async delete(image : string){
         try{
         const imageName = image.split('/').pop() ?? '';
-        console.log("🚀 ~ :29 ~ ImageUpload ~ delete ~ imageName:", imageName)
+        console.log("🚀 ~ :30 ~ ImageUpload ~ delete ~ imageName:", imageName)
         const imageId = imageName.split('.')[0];
-        console.log("🚀 ~ :31 ~ ImageUpload ~ delete ~ imageId:", imageId)
+        console.log("🚀 ~ :32 ~ ImageUpload ~ delete ~ imageId:", imageId)
         
         const resp = await cloudinary.uploader.destroy(imageId);
         return true;

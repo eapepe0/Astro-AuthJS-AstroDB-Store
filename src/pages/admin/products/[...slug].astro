@@ -18,7 +18,7 @@ if (error) {
 
 // desestructuramos de data
 const { product, images } = data;
-console.log("🚀 ~ :21 ~ images:", images)
+
 
 ---
 
@@ -227,7 +227,7 @@ console.log("🚀 ~ :21 ~ images:", images)
         </div>
 
         <!-- Slideshow -->
-        <ProductSlideshow images={images} />
+        <ProductSlideshow images={images.map(i =>  i.image)} />
 
         <table class="w-full border">
           <thead>
@@ -238,8 +238,8 @@ console.log("🚀 ~ :21 ~ images:", images)
           </thead>
           <tbody>
             {
-              images.map((image) => (
-                <tr class="border">
+              images.map(({image,id}) => (
+                <tr class="border" id={id}>
                   <td class="flex justify-center">
                     <ProductImage
                       src={image}
@@ -248,7 +248,7 @@ console.log("🚀 ~ :21 ~ images:", images)
                     />
                   </td>
                   <td class="text-center">
-                    <button class="btn-delete-image">X</button>
+                    <button type="button" class="btn-delete-image" data-id={id}>X</button>
                   </td>
                 </tr>
               ))
@@ -271,10 +271,10 @@ console.log("🚀 ~ :21 ~ images:", images)
   </style>
 </MainLayout>
 
-<script>
+<!-- <script>
 import { actions } from "astro:actions";
 import { navigate } from "astro:transitions/client";
-
+import { deleteProductImage } from "@/actions/products/delete-product-image.action";
   /* cubrimos con el astro:page-load por el ViewTransitions aka ClientRouter */
   document.addEventListener("astro:page-load", () => {
     const form = document.querySelector(
@@ -284,7 +284,8 @@ import { navigate } from "astro:transitions/client";
       document.querySelectorAll(
         ".btn-size"
       ); /* seleccionamos todo lo que tenga la clase .btn-size */
-
+    const btnsDeleteImage = document.querySelectorAll(".btn-delete-image") // seleccionamos todos los botones de borrar
+    console.log(btnsDeleteImage)
     /* hacemos esta validacion por si el ViewTransitions tira error si no existe el form en alguna transicion */
     if (!form) {
       return;
@@ -312,5 +313,166 @@ import { navigate } from "astro:transitions/client";
 
       navigate(`/admin/products/${data.slug}`);
     });
+
+    // Eliminar imagenes
+
+
+
+  btnsDeleteImage.forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        console.log('click')
+        const id = btn.getAttribute('data-id');
+        console.log(id)
+        if (!id) return;
+
+        // en data resultado positivo , error resultado negativo
+        const {data , error} = await actions.deleteProductImage(id);
+        
+        if (error) {
+          console.log(error);
+          alert(error);
+          return;
+        }
+        const escapedId = CSS.escape(id);
+        console.log(escapedId)
+        const trId = `#${escapedId}`;
+        document.querySelector(trId)?.remove();
+
+        // navigate()
+      });
+    });
+  });  // fin del astro:page-load
+</script>
+ -->
+
+
+
+<script>
+  import { actions } from 'astro:actions';
+  import { navigate } from 'astro:transitions/client';
+
+  document.addEventListener('astro:page-load', () => {
+    const form = document.querySelector('form') as HTMLFormElement;
+    const sizeButtons = document.querySelectorAll('.btn-size'); // seleccionamos los botones de tamaño
+    const btnsDeleteImage = document.querySelectorAll<HTMLButtonElement>('.btn-delete-image'); // seleccionamos los botones X de cerrar
+    const lblSelectedFiles = document.querySelector(
+      '#lbl-selected-files'
+    ) as HTMLParagraphElement;
+    const dropZone = document.querySelector('#drop-zone') as HTMLLabelElement;
+    const fileInput = document.querySelector(
+      '#file-upload'
+    ) as HTMLInputElement;
+
+    if (!form) {
+      return;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const selectedSizes = Array.from(sizeButtons)
+        .filter((btn) => btn.classList.contains('active'))
+        .map((btn) => btn.textContent?.trim())
+        .join(',');
+
+      const formData = new FormData(form);
+      formData.set('sizes', selectedSizes);
+
+      const formValues = Object.fromEntries(formData.entries());
+      console.log(formValues);
+
+      const { data, error } = await actions.createUpdateProduct(formData);
+
+      if (error) {
+        return alert(error.message);
+      }
+
+      navigate(`/admin/products/${data.slug}`);
+    });
+
+    // Eliminar imagenes
+    
+    // por cada boton de borrar
+    btnsDeleteImage.forEach((btn) => {
+      // le agregamos un evento click a cada boton
+      btn.addEventListener('click', async (e) => {
+        const id = btn.dataset.id; // extraemos el id del data-set
+        if (!id) return; //  si no existe el data-set retornamos
+
+        const { error } = await actions.deleteProductImage(id); // accion que borra la imagen de la db y de cloudinary en caso de que corresponda (la url empieza con http)
+        //  si devuelve un error lo mostramos y retornamos
+        if (error) {
+          console.log(error);
+          alert(error);
+          return;
+        }
+        
+
+        const trId = `#${id}`; // al id alfanumerico le agregamos un # para convertirlo en id
+        document.getElementById(id)?.remove(); // buscamos el elemento con el id el cual es un table row (<TR>)y lo removemos del DOM
+
+        /* navigate() */
+      });
+    });
+
+    // Drag & Drop
+
+    const preventDefaults = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    const highlight = (e: DragEvent) => {
+      dropZone.classList.add('border-blue-500', 'bg-blue-50');
+    };
+
+    const unHighlight = (e: DragEvent) => {
+      dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+    };
+
+    const createFileList = (files: File[]): FileList => {
+      const dataTrasfer = new DataTransfer();
+      files.forEach((file) => dataTrasfer.items.add(file));
+      return dataTrasfer.files;
+    };
+
+    const handleFiles = (files: FileList) => {
+      const validFiles = Array.from(files).filter((file) =>
+        file.type.startsWith('image/')
+      );
+
+      if (fileInput && validFiles.length > 0) {
+        fileInput.files = createFileList(validFiles);
+      }
+
+      lblSelectedFiles.innerHTML = `<strong>${validFiles.length} archivos seleccionados</strong>`;
+    };
+
+    (['dragenter', 'dragover', 'dragleave', 'drop'] as const).forEach(
+      (eventName) => {
+        dropZone.addEventListener(eventName, preventDefaults);
+        document.body.addEventListener(eventName, preventDefaults);
+      }
+    );
+
+    (['dragenter', 'dragover'] as const).forEach((eventName) => {
+      dropZone.addEventListener(eventName, highlight);
+    });
+
+    (['dragleave', 'drop'] as const).forEach((eventName) => {
+      dropZone.addEventListener(eventName, unHighlight);
+    });
+
+    // Sólo imágenes
+    dropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer?.files;
+
+      if (files) {
+        handleFiles(files);
+      }
+    });
+
+    // fin del astro:load
   });
 </script>
+

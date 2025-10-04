@@ -30,7 +30,7 @@ const sizes = product.sizes.split(","); //  dividimos por las ',' los tamaños
  
 
   <div class="grid grid-cols-1 md:grid-cols-3 w-full gap-4">
-    <ProductSlideshow images={images} />
+    <ProductSlideshow images={images.map(i => i.image)} />
 
     <section>
       <h2 class="text-2xl font-bold">{product.title}</h2>

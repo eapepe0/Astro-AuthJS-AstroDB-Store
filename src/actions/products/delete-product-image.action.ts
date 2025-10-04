@@ -14,6 +14,7 @@ export const deleteProductImage = defineAction({
     input : z.string(),// si no se cumple este esquema lanzara un error
     // función que maneja la acción. Recibe los datos validados como argumento.
     handler: async (imageId,{request}) => {
+        console.log("hola")
         // solamente usuarios con permisos
         const session = await getSession(request)
         const user = session?.user;
