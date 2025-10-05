@@ -17,14 +17,18 @@ if (!data) {
 const { product, images } = data; // desestructuramos el producto y las imagenes
 const sizes = product.sizes.split(","); //  dividimos por las ',' los tamaños
 
+const image = images[0].image.startsWith('http')
+? images[0].image
+: `${import.meta.env.PUBLIC_URL}/images/products/${images[0].image}`
 
+// construimos la imagen o desde la carpeta public o desde cloudinary
 ---
 
 
 <MainLayout
   title={product.title}
   description={product.description}
-
+  image={image}
 >
 <!--   image={image} -->
  

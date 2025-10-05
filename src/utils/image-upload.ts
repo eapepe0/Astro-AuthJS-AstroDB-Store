@@ -8,7 +8,7 @@ cloudinary.config({
 });
 
 
-
+const folderUpload = import.meta.env.CLODINARY_FOLDER_IMAGES; // extraemos del .env la carpeta donde publicamos las fotos
 
 export class ImageUpload{
 
@@ -17,21 +17,18 @@ export class ImageUpload{
         const buffer = await file.arrayBuffer(); //  convertimos el file a un array binario
         const base64Image = Buffer.from(buffer).toString('base64'); // creamos un Buffer de Node con ese buffer y lo pasamos a base64
         const imageType = file.type.split('/')[1] // image/png  extraemos el png
-
-        const resp = await cloudinary.uploader.upload(`data:image/${imageType};base64,${base64Image}`,{folder : 'AstroStore'}); // enviamos los datos a cloudinary
-        
+        const resp = await cloudinary.uploader.upload(`data:image/${imageType};base64,${base64Image}`,{folder : folderUpload}); // enviamos los datos a cloudinary
         return resp.secure_url // devolvemos la url de la o las imagenes subidas
     }
 
     // creamos un metodo estatico que se encargara de borrar una imagen
     static async delete(image : string){
         try{
-        const imageName = image.split('/').pop() ?? '';
-        console.log("🚀 ~ :30 ~ ImageUpload ~ delete ~ imageName:", imageName)
-        const imageId = imageName.split('.')[0];
-        console.log("🚀 ~ :32 ~ ImageUpload ~ delete ~ imageId:", imageId)
-        
-        const resp = await cloudinary.uploader.destroy(imageId);
+        const imageName = image.split('/').pop() ?? ''; // sacamos en filename
+        const imageId = imageName.split('.')[0]; // sacamos el id 
+                
+        const resp = await cloudinary.uploader.destroy(`${folderUpload}/${imageId}`); // borramos a partir de la carpeta que publicamos y el id
+        console.log(resp)
         return true;
         } catch(error){
             console.log(error)
